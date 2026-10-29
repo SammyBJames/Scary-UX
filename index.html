@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enter Your Name</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="form">
+    <h1>Enter your name...</h1>
+    <p class="instructions">
+      For your privacy, names are entered using our secure
+      <strong>Name Builder&trade;</strong>. Flip two cards. If they match,
+      that letter is added to your name. Corrections are not supported yet.
+    </p>
+
+    <div class="field">
+      <span class="field-label">Name</span>
+      <div id="name" class="name-slots" role="group"></div>
+    </div>
+
+    <div class="stats">
+      <span>Flips: <strong id="flips">0</strong></span>
+      <span>Attempt: <strong id="attempts">1</strong></span>
+    </div>
+
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <div id="board" class="board"></div>
+
+    <div class="actions">
+      <button id="restart" type="button" class="secondary">Start over</button>
+      <button id="submit" type="button" class="primary">Submit</button>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="alert" hidden></div>
+
+  <div id="result" class="overlay" hidden>
+    <div class="dialog">
+      <h2 id="result-title"></h2>
+      <p id="result-body"></p>
+      <div class="actions">
+        <button id="not-my-name" type="button" class="secondary">That's not my name</button>
+        <button id="done" type="button" class="primary">Yes, that's me</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
