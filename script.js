@@ -10,8 +10,14 @@ const attemptsEl = document.getElementById('attempts');
 const statusEl = document.getElementById('status');
 const toast = document.getElementById('toast');
 const result = document.getElementById('result');
+const confirmNotice = document.getElementById('confirm-notice');
+const heading = document.querySelector('h1');
+const nameLabel = document.getElementById('name-label');
+const submitBtn = document.getElementById('submit');
 
 let name = '';
+// The name from the first pass once it's submitted; null while still on the first pass.
+let firstEntry = null;
 let firstCard = null;
 let locked = false;
 let flips = 0;
@@ -112,15 +118,27 @@ function flip(card) {
   }, isMatch ? MATCH_DELAY : MISMATCH_DELAY);
 }
 
-function startOver() {
+function setConfirming(confirming) {
+  heading.textContent = confirming ? 'Confirm your name...' : 'Enter your name...';
+  nameLabel.textContent = confirming ? 'Confirm name' : 'Name';
+  submitBtn.textContent = confirming ? 'Confirm' : 'Submit';
+}
+
+function resetBoard() {
   name = '';
   firstCard = null;
   locked = false;
   renderName();
-  attemptsEl.textContent = ++attempts;
-  statusEl.textContent = 'Board reshuffled. Good luck.';
-  result.hidden = true;
   deal();
+}
+
+function startOver(message = 'Board reshuffled. Good luck.') {
+  firstEntry = null;
+  setConfirming(false);
+  attemptsEl.textContent = ++attempts;
+  statusEl.textContent = message;
+  result.hidden = true;
+  resetBoard();
 }
 
 function showToast(message) {
@@ -131,12 +149,30 @@ function showToast(message) {
 }
 
 function submit() {
-  const finalName = formatName(name).trim();
-  if (!finalName) {
+  const entered = formatName(name).trim();
+  if (!entered) {
     showToast('Please enter your name.');
     return;
   }
-  document.getElementById('result-title').textContent = `Nice to meet you, ${finalName}!`;
+
+  // First submission: make them do the whole thing again on a fresh shuffle.
+  if (firstEntry === null) {
+    firstEntry = entered;
+    setConfirming(true);
+    resetBoard();
+    statusEl.textContent = 'To make sure we got it right, please enter your name again. The cards have been reshuffled.';
+    confirmNotice.hidden = false;
+    return;
+  }
+
+  // We don't know which entry was wrong, so both have to be redone.
+  if (entered !== firstEntry) {
+    startOver('Names did not match. Please start over.');
+    showToast('Names did not match.');
+    return;
+  }
+
+  document.getElementById('result-title').textContent = `Nice to meet you, ${entered}!`;
   document.getElementById('result-body').textContent =
     `That only took ${flips} flips across ${attempts} attempt${attempts === 1 ? '' : 's'}.`;
   result.hidden = false;
@@ -150,9 +186,10 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-document.getElementById('restart').addEventListener('click', startOver);
-document.getElementById('submit').addEventListener('click', submit);
-document.getElementById('not-my-name').addEventListener('click', startOver);
+document.getElementById('restart').addEventListener('click', () => startOver());
+submitBtn.addEventListener('click', submit);
+document.getElementById('confirm-ok').addEventListener('click', () => (confirmNotice.hidden = true));
+document.getElementById('not-my-name').addEventListener('click', () => startOver());
 document.getElementById('done').addEventListener('click', () => {
   result.hidden = true;
   statusEl.textContent = 'Name submitted. Thank you for your patience.';

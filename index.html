@@ -16,7 +16,7 @@
     </p>
 
     <div class="field">
-      <span class="field-label">Name</span>
+      <span id="name-label" class="field-label">Name</span>
       <div id="name" class="name-slots" role="group"></div>
     </div>
 
@@ -36,6 +36,19 @@
   </main>
 
   <div id="toast" class="toast" role="alert" hidden></div>
+
+  <div id="confirm-notice" class="overlay" hidden>
+    <div class="dialog">
+      <h2>Almost done!</h2>
+      <p>
+        For your security, please confirm your name by entering it again.
+        The cards have been reshuffled.
+      </p>
+      <div class="actions">
+        <button id="confirm-ok" type="button" class="primary">OK</button>
+      </div>
+    </div>
+  </div>
 
   <div id="result" class="overlay" hidden>
     <div class="dialog">
